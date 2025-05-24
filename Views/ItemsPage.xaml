@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiCrudApp.ViewModels"
+             xmlns:model="clr-namespace:MauiCrudApp.Data"
+             x:Class="MauiCrudApp.Views.ItemsPage"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add.png" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*,Auto" ColumnDefinitions="*" Padding="10">
+        <RefreshView Grid.Row="0" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Items}"
+                            SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <StackLayout Padding="20" VerticalOptions="Center" HorizontalOptions="Center">
+                        <Image Source="empty_list.png" HeightRequest="120" WidthRequest="120" />
+                        <Label Text="No items found" FontSize="18" HorizontalTextAlignment="Center" />
+                        <Label Text="Tap the + button to add a new item" FontSize="14" HorizontalTextAlignment="Center" TextColor="Gray" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Item">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Delete" 
+                                               BackgroundColor="Red"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ItemsViewModel}}, Path=DeleteItemCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Frame Margin="0,5" Padding="10" BorderColor="LightGray">
+                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                    <CheckBox Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" 
+                                              IsChecked="{Binding IsCompleted}" 
+                                              VerticalOptions="Center" />
+                                    
+                                    <Label Grid.Row="0" Grid.Column="1" 
+                                           Text="{Binding Name}" 
+                                           FontAttributes="{Binding IsCompleted, Converter={StaticResource BoolToStrikethroughConverter}}"
+                                           FontSize="16" />
+                                    
+                                    <Label Grid.Row="1" Grid.Column="1" 
+                                           Text="{Binding Description}" 
+                                           FontSize="13" 
+                                           TextColor="Gray" 
+                                           LineBreakMode="TailTruncation" />
+                                    
+                                    <Label Grid.Row="2" Grid.Column="1" 
+                                           Text="{Binding CreatedAt, StringFormat='{0:MMM dd, yyyy}'}" 
+                                           FontSize="11" 
+                                           TextColor="DarkGray" />
+                                    
+                                    <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"
+                                           Source="chevron_right.png" 
+                                           HeightRequest="20" 
+                                           VerticalOptions="Center" />
+                                    
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ItemsViewModel}}, Path=ItemTappedCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </StackLayout.GestureRecognizers>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="1" 
+                Text="Add New Item" 
+                Command="{Binding AddItemCommand}"
+                HorizontalOptions="Center"
+                Margin="0,10,0,20"
+                WidthRequest="200"
+                CornerRadius="20"
+                BackgroundColor="#512BD4"
+                TextColor="White" />
+    </Grid>
+</ContentPage>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiCrudApp.ViewModels"
+             x:Class="MauiCrudApp.Views.ItemDetailPage"
+             Title="{Binding Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FieldLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="Gray" />
+                <Setter Property="Margin" Value="0,10,0,5" />
+            </Style>
+            <Style x:Key="FieldEntry" TargetType="Entry">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="BackgroundColor" Value="#F5F5F5" />
+                <Setter Property="Padding" Value="10" />
+            </Style>
+            <Style x:Key="FieldEditor" TargetType="Editor">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="BackgroundColor" Value="#F5F5F5" />
+                <Setter Property="AutoSize" Value="TextChanges" />
+                <Setter Property="Padding" Value="10" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*,Auto" Padding="20">
+        <ScrollView Grid.Row="0">
+            <StackLayout Spacing="10">
+                <Label Text="Name" Style="{StaticResource FieldLabel}" />
+                <Entry Text="{Binding Item.Name}" 
+                       Style="{StaticResource FieldEntry}"
+                       Placeholder="Enter item name" />
+
+                <Label Text="Description" Style="{StaticResource FieldLabel}" />
+                <Editor Text="{Binding Item.Description}" 
+                        Style="{StaticResource FieldEditor}"
+                        Placeholder="Enter item description"
+                        HeightRequest="100" />
+
+                <Label Text="Status" Style="{StaticResource FieldLabel}" />
+                <HorizontalStackLayout Spacing="10">
+                    <CheckBox IsChecked="{Binding Item.IsCompleted}" />
+                    <Label Text="Mark as completed" 
+                           VerticalOptions="Center" 
+                           FontSize="16" />
+                </HorizontalStackLayout>
+
+                <Label Text="Created At" Style="{StaticResource FieldLabel}" 
+                       IsVisible="{Binding IsNewItem, Converter={StaticResource InvertedBoolConverter}}" />
+                <Label Text="{Binding Item.CreatedAt, StringFormat='{0:MMMM dd, yyyy HH:mm}'}" 
+                       FontSize="16"
+                       TextColor="Gray"
+                       IsVisible="{Binding IsNewItem, Converter={StaticResource InvertedBoolConverter}}" />
+            </StackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="10" Margin="0,20,0,0">
+            <Button Grid.Column="0" 
+                    Text="Cancel" 
+                    Command="{Binding CancelCommand}"
+                    BackgroundColor="#E0E0E0"
+                    TextColor="Black"
+                    CornerRadius="10" />
+                    
+            <Button Grid.Column="1" 
+                    Text="Delete" 
+                    Command="{Binding DeleteCommand}"
+                    BackgroundColor="#FF5252"
+                    TextColor="White"
+                    IsVisible="{Binding IsNewItem, Converter={StaticResource InvertedBoolConverter}}"
+                    CornerRadius="10" />
+                    
+            <Button Grid.Column="2" 
+                    Text="Save" 
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    CornerRadius="10" />
+        </Grid>
+    </Grid>
+</ContentPage>
